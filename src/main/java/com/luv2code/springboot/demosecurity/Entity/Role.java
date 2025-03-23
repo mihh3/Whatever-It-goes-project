@@ -3,19 +3,18 @@ package com.luv2code.springboot.demosecurity.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "role")
+@Table(name ="roles")
+@IdClass(RoleId.class)
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "role")
+    @Id
     private String role;
 
+    // Constructors, getters and setters
     public Role() {
+        // Μπορεί να είναι κενός ή να περιέχει λογική αν χρειάζεται
     }
 
     public Role(String userId, String role) {
@@ -23,13 +22,7 @@ public class Role {
         this.role = role;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;

@@ -1,5 +1,12 @@
-<form th:action="@{/register}" method="post" xmlns:th="http://www.w3.org/1999/xhtml">
-    <input type="text" name="userId" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
+<form th:action="@{/register}" method="POST" th:object="${user}" xmlns:th="http://www.w3.org/1999/xhtml">
+    <input type="text" th:field="*{username}" placeholder="Username" required>
+    <input type="password" th:field="*{password}" placeholder="Password" required>
+
+    <select th:field="*{role}">
+        <option value="ROLE_EMPLOYEE">Employee</option>
+        <option value="ROLE_MANAGER">Manager</option>
+        <option value="ROLE_ADMIN">Admin</option>
+    </select>
+
     <button type="submit">Register</button>
 </form>

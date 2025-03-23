@@ -79,6 +79,19 @@
             box-shadow: 0 6px 20px rgba(0, 198, 255, 0.7);
         }
 
+        .btn-register {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border: none;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 75, 43, 0.7);
+        }
+
         .alert {
             animation: fadeIn 1s ease-in-out;
         }
@@ -147,9 +160,10 @@
 
                 </form>
 
-                <!-- Register Link -->
-                <p>Don't have an account? <a href="/register">Sign up here</a></p>
-
+                <!-- Register Button -->
+                <div class="d-grid mt-3">
+                    <a href="/register" class="btn btn-register">Sign Up</a>
+                </div>
 
             </div>
         </div>

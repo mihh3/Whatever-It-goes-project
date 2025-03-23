@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class UserService {
 
@@ -31,6 +34,27 @@ public class UserService {
         memberRepository.save(user);
 
         Role role = new Role(userDto.getUsername(), userDto.getRole());
-        roleRepository.save(role);
+        assignRoles(user, userDto.getRole()); // Ή "ROLE_ADMIN"
+
     }
+
+    public void assignRoles(Member member, String role) {
+
+        Set<String> roles = new HashSet<>();
+        if (role.equals("ROLE_ADMIN")) {
+            roles.add("ROLE_EMPLOYEE");
+            roles.add("ROLE_MANAGER");
+            roles.add("ROLE_ADMIN");
+        } else if (role.equals("ROLE_MANAGER")) {
+            roles.add("ROLE_EMPLOYEE");
+            roles.add("ROLE_MANAGER");
+        } else {
+            roles.add("ROLE_EMPLOYEE");
+        }
+
+        for (String r : roles) {
+            roleRepository.save(new Role(member.getUserId(), r)); // Ή όποια μέθοδο χρησιμοποιείς
+        }
+    }
+
 }
