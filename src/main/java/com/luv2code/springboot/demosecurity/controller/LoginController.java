@@ -23,7 +23,9 @@ public class LoginController {
 
     @GetMapping("/register")
     public String showRegistrationPage(Model model) {
-        model.addAttribute("user", new UserRegistrationDto());
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new UserRegistrationDto());
+        }
         return "register";
     }
 }
