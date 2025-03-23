@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚫 Access Denied - Michalis 🚫</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Background Styling */
+        body {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Glassmorphism Card */
+        .access-denied-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            max-width: 420px;
+            width: 100%;
+            animation: fadeIn 1.5s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Heading */
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #f9d423;
+            animation: slideDown 1s ease;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            height: 2px;
+            background: #f9d423;
+            margin: 20px 0;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Button-like Link */
+        a {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(45deg, #ff4e50, #f9d423);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.4s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover & Click Effects */
+        a:hover {
+            background: linear-gradient(45deg, #f9d423, #ff4e50);
+            color: black;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(249, 212, 35, 0.7);
+        }
+
+        a:active {
+            transform: scale(0.98);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .access-denied-container {
+                padding: 20px;
+            }
+
+            a {
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="access-denied-container">
+    <h2> Access Denied <br>You are not authorized to access this resource.</h2>
+    <hr>
+    <a th:href="@{/}" id="backButton">🔙 Back to Home Page</a>
+</div>
+
+<script>
+    // Simple JavaScript for fun
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Welcome to the Access Denied page! 🚀");
+
+        const backButton = document.getElementById('backButton');
+
+        backButton.addEventListener('click', () => {
+            alert("Taking you back to safety! 🏠");
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏢 Michalis Company Home Page 🏢</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Body Styling */
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            max-width: 500px;
+            width: 100%;
+            margin-top: 40px;
+            animation: fadeIn 1.5s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #f9d423;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: #f9d423;
+            margin: 20px 0;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Button & Links Styling */
+        a, input[type="submit"] {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ff4e50, #f9d423);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        a:hover, input[type="submit"]:hover {
+            background: linear-gradient(45deg, #f9d423, #ff4e50);
+            color: black;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(249, 212, 35, 0.8);
+        }
+
+        a:active, input[type="submit"]:active {
+            transform: scale(0.97);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            a, input[type="submit"] {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🏢 Michalis Company Home Page 🏢</h2>
+    <hr>
+
+    <p>Welcome to the Michalis company home page!</p>
+
+    <hr>
+
+    <!-- Display user name and role(s) -->
+    <p>
+        👤 <strong>User:</strong> <span sec:authentication="principal.username"></span><br><br>
+        🔐 <strong>Role(s):</strong> <span sec:authentication="principal.authorities"></span>
+    </p>
+
+
+    <div sec:authorize="hasRole('MANAGER')">
+    <!-- Manager Access -->
+        <p>
+            <a th:href="@{/leaders}">👥 Leadership Meeting</a><br>
+            <small>(Only for Manager peeps)</small>
+        </p>
+    </div>
+
+    <div sec:authorize="hasRole('ADMIN')">
+    <!-- Admin Access -->
+    <p>
+        <a th:href="@{/systems}">💻 IT Systems Meeting</a><br>
+        <small>(Only for Admin peeps)</small>
+    </p>
+    </div>
+
+    <hr>
+
+    <!-- Logout Button -->
+    <form th:action="@{/logout}" method="POST" id="logoutForm">
+        <input type="submit" value="🚪 Logout" />
+    </form>
+</div>
+
+<script>
+    // JavaScript for Dynamic Welcome Message and Logout Alert
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Welcome to Michalis Company Portal 🚀");
+
+        const logoutForm = document.getElementById("logoutForm");
+
+        logoutForm.addEventListener("submit", (e) => {
+            const confirmLogout = confirm("Are you sure you want to log out? 🔒");
+            if (!confirmLogout) {
+                e.preventDefault(); // Cancel form submission if user clicks "Cancel"
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
