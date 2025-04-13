@@ -6,7 +6,6 @@ import com.luv2code.springboot.demosecurity.Entity.Role;
 import com.luv2code.springboot.demosecurity.Repositories.MemberRepository;
 import com.luv2code.springboot.demosecurity.Repositories.RoleRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Service
 public class UserService {
 
-    private final MemberRepository memberRepository ;
+    private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     //private final PasswordEncoder passwordEncoder;
 
