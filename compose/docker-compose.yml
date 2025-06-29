@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: app-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: employee_directory
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build:
+      context: ..  #Move one level before so you find the Dockerfile with the image
+      dockerfile: Dockerfile    
+    container_name: spring-boot-app
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employee_directory
+      SPRING_DATASOURCE_USERNAME: springstudent
+      SPRING_DATASOURCE_PASSWORD: springstudent
+volumes:
+    mysql_data:
