@@ -43,6 +43,7 @@ public class DemoSecurityConfig {
                                 .requestMatchers("/").hasRole("EMPLOYEE")
                                 .requestMatchers("/leaders/**").hasRole("MANAGER")
                                 .requestMatchers("/systems/**").hasRole("ADMIN")
+                                .requestMatchers("/last-logins").hasRole("ADMIN")
                                 .requestMatchers("/register").permitAll()
                                 .anyRequest().authenticated()
                 )
