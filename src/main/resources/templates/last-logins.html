@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Last Logins</title>
+</head>
+<body>
+<h2>User Last Logins</h2>
+<table border="1">
+    <tr>
+        <th>Username</th>
+        <th>Last Login</th>
+    </tr>
+    <tr th:each="log : ${logins}">
+        <td th:text="${log.username}"></td>
+        <td th:text="${#temporals.format(log.lastLogin, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+</table>
+<br>
+<a th:href="@{/}">Back to Home Page</a>
+</body>
+</html>
