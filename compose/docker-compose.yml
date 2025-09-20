@@ -17,7 +17,7 @@ services:
   app:
     build:
       context: ..  #Move one level before so you find the Dockerfile with the image
-      dockerfile: Dockerfile    
+      dockerfile: Dockerfile
     container_name: spring-boot-app
     depends_on:
       - mysql

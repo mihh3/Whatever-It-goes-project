@@ -1,5 +1,6 @@
 com\luv2code\springboot\demosecurity\controller\DemoController.class
 com\luv2code\springboot\demosecurity\Entity\Role.class
+com\luv2code\springboot\demosecurity\Dtos\UserLastLoginDto.class
 com\luv2code\springboot\demosecurity\Entity\LoginActivity.class
 com\luv2code\springboot\demosecurity\Repositories\RoleRepository.class
 com\luv2code\springboot\demosecurity\Dtos\UserRegistrationDto.class
@@ -9,6 +10,7 @@ com\luv2code\springboot\demosecurity\Repositories\MemberRepository.class
 com\luv2code\springboot\demosecurity\DemosecurityApplication.class
 com\luv2code\springboot\demosecurity\controller\LoginController.class
 com\luv2code\springboot\demosecurity\aspects\LoginAspect.class
+com\luv2code\springboot\demosecurity\controller\AdminController.class
 com\luv2code\springboot\demosecurity\Entity\Member.class
 com\luv2code\springboot\demosecurity\controller\EmailController.class
 com\luv2code\springboot\demosecurity\Services\EmailService.class

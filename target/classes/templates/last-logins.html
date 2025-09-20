@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Last Logins Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-transparent {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            backdrop-filter: blur(10px);
+            width: 90vw;
+            max-width: 1200px;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        table.dataTable {
+            width: 100% !important;
+        }
+        .table {
+            font-size: 1.25rem;
+        }
+        .dataTables_wrapper .dataTables_filter {
+            text-align: right;
+        }
+        .dataTables_wrapper .dataTables_paginate {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="card card-transparent shadow-lg">
+    <!-- Header -->
+    <div class="card-header bg-primary text-white">
+        <h2 class="mb-0"><i class="fas fa-users me-2"></i>Recent Logins</h2>
+    </div>
+    <!-- Body -->
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table id="loginsTable" class="table table-striped table-hover table-dark mb-0">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Last Login</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="log : ${logins}">
+                    <td th:text="${log.username}"></td>
+                    <td th:text="${#temporals.format(log.lastLogin, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="card-footer bg-transparent text-center">
+        <a th:href="@{/}" class="btn btn-outline-light btn-lg"><i class="fas fa-home me-1"></i>Home</a>
+    </div>
+</div>
+
+<!-- Scripts with Thymeleaf parsing disabled -->
+<script th:inline="none" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="none" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="none" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script th:inline="none" src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<script th:inline="none">
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#loginsTable').DataTable({
+            pageLength: 10,
+            lengthChange: false,
+            ordering: false,
+            autoWidth: false,
+            dom: 'ft<"mt-3"p>'
+        });
+
+        // Auto-refresh every 30s
+        setInterval(() => {
+            fetch('/api/logins')
+                .then(res => res.json())
+                .then(data => {
+                    const table = $('#loginsTable').DataTable();
+                    table.clear();
+                    data.forEach(log => {
+                        table.row.add([
+                            log.username,
+                            new Date(log.lastLogin).toLocaleString()
+                        ]);
+                    });
+                    table.draw(false);
+                });
+        }, 30000);
+    });
+</script>
+</body>
+</html>
