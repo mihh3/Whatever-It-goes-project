@@ -1,73 +1,176 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poker Assistant | Lobby</title>
-    <link rel="stylesheet" th:href="@{/css/poker-theme.css}">
+    <title>🏢 Michalis Company Home Page 🏢</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Body Styling */
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            max-width: 500px;
+            width: 100%;
+            margin-top: 40px;
+            animation: fadeIn 1.5s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #f9d423;
+        }
+
+        p {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: #f9d423;
+            margin: 20px 0;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Button & Links Styling */
+        a, input[type="submit"] {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ff4e50, #f9d423);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        a:hover, input[type="submit"]:hover {
+            background: linear-gradient(45deg, #f9d423, #ff4e50);
+            color: black;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(249, 212, 35, 0.8);
+        }
+
+        a:active, input[type="submit"]:active {
+            transform: scale(0.97);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            a, input[type="submit"] {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body class="poker-table">
-<header class="poker-header">
-    <div class="poker-brand">
-        <img src="/images/poker-logo.svg" alt="Poker Assistant logo" loading="lazy">
-        <div class="poker-brand-text">
-            <span class="poker-brand-title">Poker Assistant</span>
-            <span class="poker-brand-subtitle">by Michalis Anastasiadis</span>
-        </div>
+
+<body>
+
+<div class="container">
+    <h2>🏢 Michalis Company Home Page 🏢</h2>
+    <hr>
+
+    <p>Welcome to the Michalis company home page!</p>
+
+    <hr>
+
+    <!-- Display user name and role(s) -->
+    <p>
+        👤 <strong>User:</strong> <span sec:authentication="principal.username"></span><br><br>
+        🔐 <strong>Role(s):</strong> <span sec:authentication="principal.authorities"></span>
+    </p>
+
+
+    <div sec:authorize="hasRole('MANAGER')">
+    <!-- Manager Access -->
+        <p>
+            <a th:href="@{/leaders}">👥 Leadership Meeting</a><br>
+            <small>(Only for Manager peeps)</small>
+        </p>
     </div>
-    <nav class="poker-nav">
-        <a th:href="@{/}">🏠 Lobby</a>
-        <a th:href="@{/leaders}" sec:authorize="hasRole('MANAGER')">👑 Leader table</a>
-        <a th:href="@{/systems}" sec:authorize="hasRole('ADMIN')">🛠 Systems vault</a>
-        <a th:href="@{/last-logins}" sec:authorize="hasRole('ADMIN')">📈 Last logins</a>
-        <form th:action="@{/logout}" method="POST" style="margin:0;">
-            <button type="submit">🚪 Leave table</button>
-        </form>
-    </nav>
-</header>
 
-<main class="poker-main">
-    <section class="poker-card">
-        <h2>Welcome back to the lobby</h2>
-        <p>The chips are stacked and the cards are shuffled. Your personal dashboard keeps every move in sight.</p>
+    <div sec:authorize="hasRole('ADMIN')">
+    <!-- Admin Access -->
+    <p>
+        <a th:href="@{/systems}">💻 IT Systems Meeting</a><br>
+        <small>(Only for Admin peeps)</small>
+    </p>
+    <p>
+        <a th:href="@{/last-logins}">📈 User Last Logins</a>
+    </p>
+    </div>
 
-        <div style="margin-top: 1.5rem;">
-            <p>
-                <strong>👤 Player:</strong> <span sec:authentication="principal.username"></span><br><br>
-                <strong>🎴 Role(s):</strong> <span sec:authentication="principal.authorities"></span>
-            </p>
-        </div>
+    <hr>
 
-        <div sec:authorize="hasRole('MANAGER')" style="margin-top: 2rem;">
-            <h3>High roller room</h3>
-            <p>Exclusive briefings for managers await at the leader table.</p>
-            <a th:href="@{/leaders}" class="poker-btn">Enter leader meeting</a>
-        </div>
-
-        <div sec:authorize="hasRole('ADMIN')" style="margin-top: 2rem;">
-            <h3>Control room</h3>
-            <p>Keep watch over systems and player logins.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                <a th:href="@{/systems}" class="poker-btn">IT systems vault</a>
-                <a th:href="@{/last-logins}" class="poker-btn">Recent logins</a>
-            </div>
-        </div>
-
-        <div class="welcome-banner" style="margin-top: 2.5rem;">
-            Need another deck? Reach out to Michalis Anastasiadis for new features.
-        </div>
-    </section>
-</main>
-
-<footer class="poker-footer">
-    Enjoy responsible gaming. May the odds be ever in your favour.
-</footer>
+    <!-- Logout Button -->
+    <form th:action="@{/logout}" method="POST" id="logoutForm">
+        <input type="submit" value="🚪 Logout" />
+    </form>
+</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('Poker Assistant lobby ready.');
+    // JavaScript for Dynamic Welcome Message and Logout Alert
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Welcome to Michalis Company Portal 🚀");
+
+        const logoutForm = document.getElementById("logoutForm");
+
+        logoutForm.addEventListener("submit", (e) => {
+            const confirmLogout = confirm("Are you sure you want to log out? 🔒");
+            if (!confirmLogout) {
+                e.preventDefault(); // Cancel form submission if user clicks "Cancel"
+            }
+        });
     });
 </script>
+
 </body>
 </html>
