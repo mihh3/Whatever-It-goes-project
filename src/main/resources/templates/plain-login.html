@@ -1,44 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <title>Custom Login Page</title>
-
-    <style>
-		.failed {
-			color: red;
-		}
-	</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Assistant | Login</title>
+    <link rel="stylesheet" th:href="@{/css/poker-theme.css}">
 </head>
-
-<body>
-
-<h3>My Custom Login Page</h3>
-
-<form action="#" th:action="@{/authenticateTheUser}"
-           method="POST">
-
-    <!-- Check for login error -->
-
-    <div th:if="${param.error}">
-
-        <i class="failed">Sorry! You entered invalid username/password.</i>
-
-    </div>
-
-    <p>
-        User name: <input type="text" name="username" />
-    </p>
-
-    <p>
-        Password: <input type="password" name="password" />
-    </p>
-
-    <input type="submit" value="Login" />
-
-</form>
-
+<body class="poker-table">
+<main class="auth-wrapper">
+    <section class="poker-card auth-card">
+        <img src="/images/poker-logo.svg" alt="Poker Assistant logo" class="brand-logo" loading="lazy">
+        <h1>Poker Assistant</h1>
+        <p class="welcome-banner">&lsquo; Welcome to poker Assistant, an app made by Michalis anastasiadis &rsquo;</p>
+        <form th:action="@{/authenticateTheUser}" method="POST">
+            <div th:if="${param.error}" class="poker-alert">Sorry! You entered an invalid username or password.</div>
+            <label for="username">Username</label>
+            <input id="username" type="text" name="username" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" required>
+            <button type="submit" class="poker-btn" style="justify-content: center;">Enter the table</button>
+        </form>
+    </section>
+</main>
 </body>
-
 </html>
