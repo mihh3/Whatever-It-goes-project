@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏢 Michalis Company Home Page 🏢</title>
+
     <style>
-        /* Reset */
         * {
             margin: 0;
             padding: 0;
@@ -15,7 +15,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Body Styling */
         body {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #ffffff;
@@ -26,7 +25,6 @@
             align-items: center;
         }
 
-        /* Container */
         .container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -34,7 +32,7 @@
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            max-width: 500px;
+            max-width: 700px;
             width: 100%;
             margin-top: 40px;
             animation: fadeIn 1.5s ease-in-out;
@@ -44,6 +42,11 @@
         h2 {
             font-size: 2rem;
             margin-bottom: 20px;
+            color: #f9d423;
+        }
+
+        h3 {
+            margin: 20px 0 10px;
             color: #f9d423;
         }
 
@@ -63,7 +66,39 @@
             margin-right: auto;
         }
 
-        /* Button & Links Styling */
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 12px;
+            text-align: left;
+            transition: 0.3s;
+        }
+
+        .post-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .post-author {
+            font-weight: bold;
+            color: #f9d423;
+        }
+
+        .post-date {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
         a, input[type="submit"] {
             display: inline-block;
             padding: 12px 25px;
@@ -84,30 +119,17 @@
             box-shadow: 0 6px 15px rgba(249, 212, 35, 0.8);
         }
 
-        a:active, input[type="submit"]:active {
-            transform: scale(0.97);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-
-            a, input[type="submit"] {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            margin: 0 5px;
         }
     </style>
 </head>
@@ -115,6 +137,7 @@
 <body>
 
 <div class="container">
+
     <h2>🏢 Michalis Company Home Page 🏢</h2>
     <hr>
 
@@ -122,53 +145,108 @@
 
     <hr>
 
-    <!-- Display user name and role(s) -->
+    <!-- User Info -->
     <p>
-        👤 <strong>User:</strong> <span sec:authentication="principal.username"></span><br><br>
-        🔐 <strong>Role(s):</strong> <span sec:authentication="principal.authorities"></span>
+        👤 <strong>User:</strong>
+        <span sec:authentication="principal.username"></span><br><br>
+        🔐 <strong>Role(s):</strong>
+        <span sec:authentication="principal.authorities"></span>
     </p>
 
-
+    <!-- Manager Section -->
     <div sec:authorize="hasRole('MANAGER')">
-    <!-- Manager Access -->
         <p>
             <a th:href="@{/leaders}">👥 Leadership Meeting</a><br>
             <small>(Only for Manager peeps)</small>
         </p>
     </div>
 
+    <!-- Admin Section -->
     <div sec:authorize="hasRole('ADMIN')">
-    <!-- Admin Access -->
-    <p>
-        <a th:href="@{/systems}">💻 IT Systems Meeting</a><br>
-        <small>(Only for Admin peeps)</small>
-    </p>
-    <p>
-        <a th:href="@{/last-logins}">📈 User Last Logins</a>
-    </p>
+        <p>
+            <a th:href="@{/systems}">💻 IT Systems Meeting</a>
+        </p>
+        <p>
+            <a th:href="@{/last-logins}">📈 User Last Logins</a>
+        </p>
     </div>
 
     <hr>
 
-    <!-- Logout Button -->
-    <form th:action="@{/logout}" method="POST" id="logoutForm">
-        <input type="submit" value="🚪 Logout" />
+    <!-- CREATE POST -->
+    <h3>📝 Create a Post</h3>
+
+    <form th:action="@{/posts}" method="POST">
+        <textarea name="content"
+                  rows="3"
+                  placeholder="What's on your mind?"
+                  required></textarea>
+        <input type="submit" value="➕ Post"/>
     </form>
+
+    <hr>
+
+    <!-- FEED -->
+    <h3>📢 Company Feed</h3>
+
+    <div th:if="${posts != null}">
+        <div th:each="post : ${posts.content}" class="post-card">
+
+            <div class="post-author"
+                 th:text="${post.author.userId}">
+                Username
+            </div>
+
+            <p th:text="${post.content}">
+                Post content
+            </p>
+
+            <div class="post-date"
+                 th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy HH:mm')}">
+                Date
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" th:if="${posts.totalPages > 1}">
+        <a th:if="${!posts.first}"
+           th:href="@{/(page=${posts.number - 1})}">
+            ⬅ Previous
+        </a>
+
+        <span> Page <span th:text="${posts.number + 1}"></span>
+            of <span th:text="${posts.totalPages}"></span>
+        </span>
+
+        <a th:if="${!posts.last}"
+           th:href="@{/(page=${posts.number + 1})}">
+            Next ➡
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- Logout -->
+    <form th:action="@{/logout}" method="POST" id="logoutForm">
+        <input type="submit" value="🚪 Logout"/>
+    </form>
+
 </div>
 
 <script>
-    // JavaScript for Dynamic Welcome Message and Logout Alert
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("Welcome to Michalis Company Portal 🚀");
 
         const logoutForm = document.getElementById("logoutForm");
 
         logoutForm.addEventListener("submit", (e) => {
             const confirmLogout = confirm("Are you sure you want to log out? 🔒");
             if (!confirmLogout) {
-                e.preventDefault(); // Cancel form submission if user clicks "Cancel"
+                e.preventDefault();
             }
         });
+
     });
 </script>
 
