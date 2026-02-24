@@ -162,14 +162,17 @@
     </div>
 
     <!-- Admin Section -->
-    <div sec:authorize="hasRole('ADMIN')">
+        <div sec:authorize="isAuthenticated()">
         <p>
-            <a th:href="@{/systems}">💻 IT Systems Meeting</a>
+            <a th:href="@{/chat}">💬 Chat Room</a>
         </p>
+        </div>
+
+        <div sec:authorize="hasRole('ADMIN')">
         <p>
             <a th:href="@{/last-logins}">📈 User Last Logins</a>
         </p>
-    </div>
+        </div>
 
     <hr>
 

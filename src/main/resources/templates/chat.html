@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>💬 Chat Room</title>
+
+    <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            margin: 0 20px 20px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+        }
+
+        /* USERS LIST */
+        .users {
+            width: 250px;
+            border-right: 1px solid rgba(255,255,255,0.3);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .users h4 {
+            margin-bottom: 15px;
+        }
+
+        .user-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 25px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(45deg,#ff4e50,#f9d423);
+            transition: 0.3s;
+        }
+
+        .user-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* CHAT BOX */
+        .chat-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        #chatWith {
+            margin-bottom: 15px;
+            color: #f9d423;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 60%;
+            word-wrap: break-word;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        .me {
+            align-self: flex-end;
+            background: #f9d423;
+            color: black;
+        }
+
+        .other {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .input-area {
+            display: flex;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+        }
+
+        #sendBtn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(45deg,#ff4e50,#f9d423);
+        }
+
+        #sendBtn:hover {
+            transform: scale(1.05);
+        }
+
+        a {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>💬 Real-Time Chat Room</h2>
+
+<div class="chat-container">
+
+    <!-- USERS -->
+    <div class="users">
+        <h4>Users</h4>
+
+        <div th:each="user : ${users}">
+            <div th:if="${user.userId != currentUser}">
+                <button class="user-btn"
+                        th:data-username="${user.userId}"
+                        th:text="${user.userId}">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-box">
+
+        <h4 id="chatWith">Select a user to start chatting</h4>
+
+        <div id="messages"></div>
+
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type message..." />
+            <button id="sendBtn">Send</button>
+        </div>
+
+    </div>
+
+</div>
+
+<a th:href="@{/}">⬅ Back to Home</a>
+
+<script th:inline="javascript">
+
+    let stompClient = null;
+    let selectedUser = null;
+    const currentUser = [[${currentUser}]];
+
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function () {
+
+            stompClient.subscribe('/user/queue/messages', function (message) {
+
+                const msg = JSON.parse(message.body);
+
+                if (msg.sender === selectedUser) {
+                    showMessage(msg.content, false);
+                }
+            });
+        });
+    }
+
+    function selectUser(username) {
+
+        selectedUser = username;
+        document.getElementById("chatWith").innerText =
+            "Chatting with " + username;
+
+        const messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML = "";
+
+        fetch("/api/chat/history/" + username)
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach(msg => {
+
+                    if (msg.sender === currentUser) {
+                        showMessage(msg.content, true);
+                    } else {
+                        showMessage(msg.content, false);
+                    }
+
+                });
+
+                scrollToBottom();
+            });
+    }
+
+    function sendMessage() {
+
+        if (!selectedUser) {
+            alert("Select a user first!");
+            return;
+        }
+
+        const input = document.getElementById("messageInput");
+        const content = input.value.trim();
+
+        if (!content) return;
+
+        stompClient.send("/app/chat", {}, JSON.stringify({
+            receiver: selectedUser,
+            content: content
+        }));
+
+        showMessage(content, true);
+        input.value = "";
+        scrollToBottom();
+    }
+
+    function showMessage(message, isMe) {
+
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message " + (isMe ? "me" : "other");
+        msgDiv.innerText = message;
+
+        document.getElementById("messages").appendChild(msgDiv);
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        const messages = document.getElementById("messages");
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".user-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                selectUser(this.dataset.username);
+            });
+        });
+
+        document.getElementById("sendBtn")
+            .addEventListener("click", sendMessage);
+
+        document.getElementById("messageInput")
+            .addEventListener("keypress", function(e){
+                if(e.key === "Enter"){
+                    sendMessage();
+                }
+            });
+
+    });
+
+    connect();
+
+</script>
+
+</body>
+</html>

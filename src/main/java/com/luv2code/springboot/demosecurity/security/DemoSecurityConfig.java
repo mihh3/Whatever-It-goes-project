@@ -45,6 +45,7 @@ public class DemoSecurityConfig {
                                 .requestMatchers("/systems/**").hasRole("ADMIN")
                                 .requestMatchers("/last-logins").hasRole("ADMIN")
                                 .requestMatchers("/register").permitAll()
+                                .requestMatchers("/chat/**", "/ws/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->
